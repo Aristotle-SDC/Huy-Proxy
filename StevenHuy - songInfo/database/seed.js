@@ -1,0 +1,57 @@
+const promise = require('bluebird');
+const options = { promiseLib: promise };
+const pgp = require('pg-promise')(options);
+const data = require('./dataGen.js');
+const songList = require('./models/SongList.js');
+// const db = require('./index.js');
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/songinfo', {useNewUrlParser: true})
+.then(() => {
+  console.log("Connected");
+})
+.catch(err => console.log(err));
+
+mongoose.connection.once('open', () => {
+  mongoose.connection.collections.songList.drop((err) => {
+    if (err) {
+      console.log("Error dropping existing documents in songList");
+    }
+    if (!err) {
+      console.log('Dropped existing documents in songList');
+    }
+  });
+});
+
+  var chunkSize = 10000;
+  var numOfChunks = 1000;
+  console.time('Seeding took');
+
+  const insertData = (prevIndex) => {
+    if (prevIndex < numOfChunks) {
+      var songData = [];
+      for(var i= 1; i <= chunkSize; i++) {
+        var index = prevIndex * chunkSize + i;
+        songData.push({
+          id: index,
+          plays: data.Plays[index-1],
+          likes: data.Likes[index-1],
+          reposts: data.Reposts[index-1],
+          description: data.Desc[index-1],
+          artist: data.Art[index-1],
+          artistFollowers: data.ArtFol[index-1],
+          artistTracks: data.ArtTra[index-1],
+        });
+      }
+      console.log('Number of chunks added:', prevIndex);
+      songList.insertMany(songData, () => {
+        if(prevIndex === numOfChunks - 1) { console.timeEnd('Seeding took')};
+        insertData(++prevIndex);
+      });
+      return;
+    }
+  }
+
+insertData(0);
+
+
