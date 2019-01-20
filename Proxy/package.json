@@ -1,0 +1,27 @@
+{
+  "name": "HuyProxy",
+  "version": "1.0.0",
+  "description": "AristotleSDC",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "nodemon ./server.js"
+  },
+  "author": "Huy Truong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/janeslee/Jane_Proxy/issues"
+  },
+  "homepage": "https://github.com/janeslee/Jane_Proxy#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "morgan": "^1.9.1",
+    "newrelic": "^5.1.0",
+    "path": "^0.12.7",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "request": "^2.88.0"
+  }
+}
